@@ -20,15 +20,17 @@ def main():
 
     output = ""
     for animal in animals_data:
+        output += "<li class='cards__item'>"
         if 'name' in animal:
-            output += f"\nName: {animal['name']}\n"
+            output += f"\nName: {animal['name']}<br/>"
         if 'diet' in animal['characteristics']:
-            output += f"Diet: {animal['characteristics']['diet']}\n"
+            output += f"Diet: {animal['characteristics']['diet']}<br/>"
         if 'locations' in animal and animal['locations']:
-            output += f"Location: {animal['locations'][0]}\n"
+            output += f"Location: {animal['locations'][0]}<br/>"
         if 'type' in animal['characteristics']:
-            output += f"Type: {animal['characteristics']['type']}\n"
-    insert_into_html("animals_template.html", output.replace("\n","<br>"))
+            output += f"Type: {animal['characteristics']['type']}<br/>"
+        output += "</li>"
+    insert_into_html("animals_template.html", output)
 
 
 if __name__ == "__main__":
