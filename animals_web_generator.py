@@ -6,19 +6,30 @@ def load_data(file_path):
     with open(file_path, "r") as handle:
         return json.load(handle)
 
+def insert_into_html(file_path, text):
+    """loads a html file"""
+    with open(file_path, "r") as infile:
+        htmlcode = infile.read()
+
+    with open(file_path, "w") as outfile:
+        outfile.write(htmlcode.replace("__REPLACE_ANIMALS_INFO__", text))
+
 
 def main():
     animals_data = load_data("animals_data.json")
+
+    output = ""
     for animal in animals_data:
         if 'name' in animal:
-            print(f'Name: {animal["name"]}')
+            output += f"\nName: {animal['name']}\n"
         if 'diet' in animal['characteristics']:
-            print(f'Diet: {animal["characteristics"]["diet"]}')
+            output += f"Diet: {animal['characteristics']['diet']}\n"
         if 'locations' in animal and animal['locations']:
-            print(f'Location: {animal["locations"][0]}')
+            output += f"Location: {animal['locations'][0]}\n"
         if 'type' in animal['characteristics']:
-            print(f'Type: {animal["characteristics"]["type"]}')
-        print()
+            output += f"Type: {animal['characteristics']['type']}\n"
+    insert_into_html("animals_template.html", output.replace("\n","<br>"))
+
 
 if __name__ == "__main__":
     main()
