@@ -22,6 +22,7 @@ TRANSLATION_TABLE = str.maketrans({8217: "&rsquo;", 180: "&lsquo;", 196: "&Auml;
                                    })
 
 def send_get_request(name):
+    """Sends a single get request to animals-api. Returns complete response"""
     api_url = 'https://api.api-ninjas.com/v1/animals?name={}'.format(name)
     response = requests.get(api_url,
                             headers={'X-Api-Key': 'AazlY6Wbh9RvPfdYMSJq3A==0eHAHVdy9q1rTzWQ'})
@@ -29,12 +30,6 @@ def send_get_request(name):
         return response
     else:
         print("Error:", response.status_code, response.text)
-
-
-def load_data(file_path):
-    """loads a json file"""
-    with open(file_path, "r") as handle:
-        return json.load(handle)
 
 
 def insert_into_html(text):
@@ -87,10 +82,13 @@ def main():
     html_addon = ""
     animal = input("Enter a name of an animal: ")
     response = send_get_request(animal)
-    for animal in response.json():
-        html_addon += serialize_animal(animal)
-    insert_into_html(html_addon)
-    print("Website was successfully generated to the file animals.html")
+    if response.json():
+        for animal in response.json():
+            html_addon += serialize_animal(animal)
+        insert_into_html(html_addon)
+        print("Website was successfully generated to the file animals.html")
+    else:
+        print("Sorry: Unknown Species: No data available")
 
 
 
@@ -98,5 +96,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-#api-key: 'AazlY6Wbh9RvPfdYMSJq3A==0eHAHVdy9q1rTzWQ'
