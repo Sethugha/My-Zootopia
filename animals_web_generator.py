@@ -1,5 +1,4 @@
-import requests
-from dotenv import dotenv_values
+import data_fetcher as df
 
 
 TRANSLATION_TABLE = str.maketrans({8217: "&rsquo;", 180: "&lsquo;", 196: "&Auml;",
@@ -8,26 +7,8 @@ TRANSLATION_TABLE = str.maketrans({8217: "&rsquo;", 180: "&lsquo;", 196: "&Auml;
                                    })
 
 
-def send_get_request(name):
-    """Sends a single get request to animals-api. Returns complete response
-    The necessary API-key is imported via dotenv.
-    :parameter name: Complete or part of an animal identifier
-    """
-    config = dotenv_values(".env_orig")
-    api_url = 'https://api.api-ninjas.com/v1/animals?name={}'.format(name)
-    try:
-        response = requests.get(api_url, headers=config)
-        if response.status_code == requests.codes.ok:
-            return response
-        else:
-            print("Error:", response.status_code, response.text)
-    except Exception as e:
-        print(f"Error: Something went wrong with the request. Exception {e}")
-
-
-def insert_into_html(text):
-    """inserts text into a html file. The insertion is also used to replace
-    some special characters with their html-code.
+def insert_animal_data_into_html(text):
+    """inserts text into a html file
     :parameter text: Text to replace the wildcard with.
     :return: None
     """
@@ -42,13 +23,13 @@ def insert_into_html(text):
 def serialize_animal(animal_obj, selection = ""):
     """extracts desired values from a single animal_object
     :parameter animal_object: single object from datasource
-    :parameter selection: if given, returns only values for objects with characteristic
+    :parameter selection: if given, returns only values for objects with this characteristic
     """
     if not animal_obj.get('characteristics'):
-        return ""
+        return None
     if animal_obj['characteristics'].get('skin_type'):
         if selection and selection.lower() not in animal_obj['characteristics']['skin_type'].lower():
-            return ""
+            return None
         output = ''
         output += "<li class='cards__item'>"
         output += f"<div class='card__title'>{animal_obj['name']}</div>"
@@ -66,17 +47,14 @@ def serialize_animal(animal_obj, selection = ""):
 def main():
     animal_html_content = ""
     animal = input("Enter a name of an animal: ")
-    try:
-        response = send_get_request(animal)
-        if response.json():
-            for animal in response.json():
-                animal_html_content += serialize_animal(animal)
-            insert_into_html(animal_html_content)
-            print("Website was successfully generated to the file animals.html")
-        else:
-            print("Sorry: Unknown Species: No data available")
-    except AttributeError:
-        print("Sorry, something went wrong with the API-response")
+    response = df.fetch_data(animal)
+    if response.json():
+        for animal in response.json():
+            animal_html_content += serialize_animal(animal)
+        insert_animal_data_into_html(animal_html_content)
+        print("Website was successfully generated to the file animals.html")
+    else:
+        print("Sorry: Unknown Species: No data available")
 
 
 if __name__ == "__main__":
