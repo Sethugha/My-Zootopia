@@ -52,6 +52,15 @@
           margin: 50px;
         }
 
+        .cards__item__flip {
+          background-color: white;
+          border-radius: 0.25rem;
+          box-shadow: 0 20px 40px -14px rgba(0,0,0,0.5);
+          overflow: hidden;
+          padding: 1rem;
+          margin: 50px;
+        }
+
         .cards__item:hover {
           background-color: white;
           border-radius: 0.25rem;
@@ -61,6 +70,17 @@
           margin: 50px;
           transform: translateY(-5px);
         }
+
+         .cards__item:active {
+          background-color: white;
+          border-radius: 0.25rem;
+          box-shadow: 0 30px 40px -14px rgba(0,0,0,0.9);
+          overflow: hidden;
+          padding: 1rem;
+          margin: 50px;
+          transform: rotateY(180deg);
+        }
+
 
         .card__title {
           color: @gray-dark;
