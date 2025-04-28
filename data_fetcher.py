@@ -22,7 +22,7 @@ def fetch_data(animal_name):
   config = dotenv_values(".env")
   api_url = 'https://api.api-ninjas.com/v1/animals?name={}'.format(animal_name)
   try:
-      response = requests.get(api_url, headers=config)
+      response = requests.get(api_url, headers={'X-API-KEY' : config['X-API-KEY']})
       if response.status_code == requests.codes.ok:
           return response
       else:
